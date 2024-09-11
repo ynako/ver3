@@ -27,12 +27,14 @@ public class PolicyHandler {
         value = KafkaProcessor.INPUT,
         condition = "headers['type']=='AddCart'"
     )
-    public void wheneverAddCart_주문접수(@Payload AddCart addCart) {
+    public void wheneverAddCart_OrderAccept(@Payload AddCart addCart) {
         AddCart event = addCart;
-        System.out.println("\n\n##### listener 주문접수 : " + addCart + "\n\n");
+        System.out.println(
+            "\n\n##### listener OrderAccept : " + addCart + "\n\n"
+        );
 
         // Sample Logic //
-        Ordermenu.주문접수(event);
+        Ordermenu.orderAccept(event);
     }
 }
 //>>> Clean Arch / Inbound Adaptor

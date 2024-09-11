@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.*;
 import lombok.Data;
 import team.OrderManagementApplication;
+import team.domain.OrderAdded;
 import team.domain.OrderDeleted;
 import team.domain.StatusUpdated;
 
@@ -27,6 +28,12 @@ public class Ordermenu {
 
     private String menuStatus;
 
+    @PostPersist
+    public void onPostPersist() {
+        OrderAdded orderAdded = new OrderAdded(this);
+        orderAdded.publishAfterCommit();
+    }
+
     @PostUpdate
     public void onPostUpdate() {
         StatusUpdated statusUpdated = new StatusUpdated(this);
@@ -42,6 +49,9 @@ public class Ordermenu {
     @PreUpdate
     public void onPreUpdate() {}
 
+    @PreRemove
+    public void onPreRemove() {}
+
     public static OrdermenuRepository repository() {
         OrdermenuRepository ordermenuRepository = OrderManagementApplication.applicationContext.getBean(
             OrdermenuRepository.class
@@ -50,13 +60,15 @@ public class Ordermenu {
     }
 
     //<<< Clean Arch / Port Method
-    public static void 주문접수(AddCart addCart) {
+    public static void orderAccept(AddCart addCart) {
         //implement business logic here:
 
         /** Example 1:  new item 
         Ordermenu ordermenu = new Ordermenu();
         repository().save(ordermenu);
 
+        OrderAdded orderAdded = new OrderAdded(ordermenu);
+        orderAdded.publishAfterCommit();
         */
 
         /** Example 2:  finding and process
@@ -66,6 +78,8 @@ public class Ordermenu {
             ordermenu // do something
             repository().save(ordermenu);
 
+            OrderAdded orderAdded = new OrderAdded(ordermenu);
+            orderAdded.publishAfterCommit();
 
          });
         */
